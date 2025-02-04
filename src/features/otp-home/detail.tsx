@@ -6,7 +6,7 @@ import StickyWhatsAppButton from '@/components/ui-base/whatsapp-button';
 import usePackingDataDetail from '@/features/otp-home/hook/detail.hook';
 import { formatDateID } from '@/lib/utility/formatDate';
 import { formatNumber } from '@/lib/utility/formatNumber'; 
-import PackListCard from '@/components/ui-base/form-copy';
+import PackListCard from '@/components/ui-base/form-copy'; // Importing the RequestBody type
 
 
 const Detail: React.FC = () => {
