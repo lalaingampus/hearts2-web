@@ -102,7 +102,7 @@ const OtpForm: React.FC = () => {
 
             {/* Tombol Resend OTP */}
             {seconds === 0 && (
-                <Button onClick={handleResendOtp} className="mt-4" size="sm">
+                <Button onClick={handleResendOtp} className="mt-4" size="sm" disabled={isResendDisabled}>
                     Resend OTP
                 </Button>
             )}

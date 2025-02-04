@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui-base/button'; // Komponen tombol
-import { useNavigate } from 'react-router-dom'; // Import useNavigate untuk navigasi
-import { UserDetails } from '@/features/otp-home/types/detail.type'; // Impor tipe data pengguna
-import { FaCopy } from 'react-icons/fa';
+import React from 'react';
 import FooterLogo from '@/assets/footer.png'; 
 import Timeline from '@/components/ui-base/timeline';
 import  historyItems  from '@/features/otp-home/data/default'; 
@@ -14,17 +10,10 @@ import PackListCard from '@/components/ui-base/form-copy';
 
 
 const Detail: React.FC = () => {
-    const [deliveryMethod, setDeliveryMethod] = useState('SPU')
-    const { data, loading, error } = usePackingDataDetail();
+    const { data } = usePackingDataDetail();
 
-  const navigate = useNavigate(); // Inisialisasi hook navigasi
 
   // Contoh data pengguna (bisa berasal dari API atau state global)
-  const user: UserDetails = {
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    phone: '+62 812 3456 7890',
-  };
 
   const handleCopyClick = (packListDocNo: string) => {
     console.log(typeof packListDocNo, packListDocNo);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Untuk navigasi antar halaman
 import HinoLogo from '@/assets/image.png'; // Gambar logo Hino
 import FooterLogo from '@/assets/footer.png'; // Gambar logo footer
@@ -6,7 +6,6 @@ import FooterLogo from '@/assets/footer.png'; // Gambar logo footer
 const SplashScreen = () => {
   const [progress, setProgress] = useState(0); // State untuk menyimpan progress
   const [fade, setFade] = useState(false); // State untuk animasi fade
-  const [startTime, setStartTime] = useState<number>(Date.now()); // Waktu mulai
   const navigate = useNavigate(); // Hook untuk navigasi halaman
 
   useEffect(() => {
@@ -15,10 +14,12 @@ const SplashScreen = () => {
     const totalWithFade = totalDuration + fadeDuration; // Total durasi termasuk fade
     const intervalDuration = 50; // Interval untuk update progress bar (ms)
     const maxProgress = 100; // Persentase maksimal progress
-    let intervalId: NodeJS.Timeout;
 
+    const startTime = Date.now(); // Mengambil waktu mulai
+
+    // Menghitung progress berdasarkan waktu yang telah berlalu
     const calculateProgress = () => {
-      const elapsedTime = Date.now() - startTime;
+      const elapsedTime = Date.now() - startTime; // Hitung waktu yang telah berlalu
       const newProgress = Math.min((elapsedTime / totalDuration) * maxProgress, maxProgress);
       setProgress(newProgress);
 
@@ -28,7 +29,7 @@ const SplashScreen = () => {
     };
 
     // Mulai interval untuk update progress bar
-    intervalId = setInterval(calculateProgress, intervalDuration);
+    const intervalId = setInterval(calculateProgress, intervalDuration); // intervalId dideklarasikan sebagai const
 
     // Mengaktifkan animasi fade setelah 7 detik
     const fadeTimer = setTimeout(() => {
@@ -42,11 +43,11 @@ const SplashScreen = () => {
 
     // Membersihkan interval dan timeout ketika komponen di-unmount
     return () => {
-      clearInterval(intervalId);
-      clearTimeout(fadeTimer);
-      clearTimeout(navigateTimer);
+      clearInterval(intervalId); // Pastikan interval dibersihkan
+      clearTimeout(fadeTimer); // Membersihkan timeout untuk fade
+      clearTimeout(navigateTimer); // Membersihkan timeout untuk navigasi
     };
-  }, [startTime, navigate]);
+  }, [navigate]);
 
   return (
     <div

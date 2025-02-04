@@ -2,36 +2,48 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_URLS from '@/config/api-url';
 import API_HEADERS_PACKING from '@/config/api-headers';
-import USER_INFO_PACKING from '@/config/api-userInfo';
 import { normalizeRequestBody } from '../data/normalizer';
+import { RequestBody } from '../data/normalizer'; // Importing the RequestBody type
 
-// Hook untuk mengambil data packing list
+// Define the expected response structure
+interface PackingListResponse {
+  GetPackingListRegisterResult: {
+    PackingListId: string;
+    PackingListName: string;
+    Quantity: number;
+    // Add other fields based on the API response structure
+  }[];
+}
+
+// Hook to fetch packing list data
 const usePackingDataDetail = () => {
-  const [data, setData] = useState<any[]>([]); // State untuk menyimpan data response
-  const [loading, setLoading] = useState(true); // State untuk loading
-  const [error, setError] = useState<string | null>(null); // State untuk error
+  const [data, setData] = useState<PackingListResponse['GetPackingListRegisterResult']>([]); // State for storing the response data
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState<string | null>(null); // State for error
 
-  // Fungsi untuk melakukan fetch data
+  // Function to fetch data from the API
   const fetchData = async () => {
-    const url = API_URLS.packingList; 
+    const url = API_URLS.packingList;
 
-    // Body data sesuai spesifikasi
-    const body = normalizeRequestBody();
-
-   
+    // Request body based on RequestBody interface
+    const body: RequestBody = normalizeRequestBody();
 
     try {
-      setLoading(true); // Aktifkan loading
-      const response = await axios.post(url, body, { headers: API_HEADERS_PACKING });
-      setData(response.data.GetPackingListRegisterResult); // Simpan data response
-      setLoading(false); // Matikan loading
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan'); // Tangani error
-      setLoading(false); // Matikan loading
+      setLoading(true); // Enable loading state
+      const response = await axios.post<PackingListResponse>(url, body, { headers: API_HEADERS_PACKING });
+      setData(response.data.GetPackingListRegisterResult); // Store the response data
+      setLoading(false); // Disable loading state
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message); // Set error message if error is instance of Error
+      } else {
+        setError('Terjadi kesalahan'); // Handle unknown error
+      }
+      setLoading(false); // Disable loading state
     }
   };
 
-  // Panggil fetchData saat komponen dimuat
+  // Call fetchData when the component mounts
   useEffect(() => {
     fetchData();
   }, []);
