@@ -21,16 +21,16 @@ Saat ini, dua plugin resmi tersedia:
 
 Untuk memulai proyek ini, ikuti langkah-langkah berikut:
 
-1. **Clone Repositori**  
+### 1. Clone Repositori
    Pertama, pastikan Anda sudah meng-clone repositori `hearts2-website` ke komputer lokal Anda.
    ```bash
    git clone <URL repositori>
   ```
-2. **Install Depedency**
+### 2. Install Depedency
   ```bash
   pnpm install
   ```
-3. **Jalankan aplikasinya**
+### 3. Jalankan aplikasinya
   ```bash
     pnpm run dev
   ```
