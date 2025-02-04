@@ -1,7 +1,7 @@
 // normalizeRequest.ts
 import USER_INFO_PACKING from "@/config/api-userInfo";
 
-interface RequestBody {
+export interface RequestBody {
   CompanyCode: string;
   StartDate: string;
   EndDate: string;
