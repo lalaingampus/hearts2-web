@@ -38,7 +38,7 @@ const SplashScreen = () => {
 
     // Navigasi setelah 8 detik (7 detik untuk fade + 1 detik animasi fade out)
     const navigateTimer = setTimeout(() => {
-      navigate('/form-otp'); // Ganti dengan path halaman utama Anda
+      navigate('/form-code-document'); // Ganti dengan path halaman utama Anda
     }, totalWithFade);
 
     // Membersihkan interval dan timeout ketika komponen di-unmount

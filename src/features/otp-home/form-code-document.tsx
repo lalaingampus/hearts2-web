@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui-base/button';
-import { CountdownTimer } from '@/lib/utility/times';
 import HinoLogo from '@/assets/image.png';
 import FooterLogo from '@/assets/footer.png';
 import { otpSchema } from './data/schema';
@@ -9,21 +8,16 @@ import { useNavigate } from 'react-router-dom';
 
 const OtpForm: React.FC = () => {
     const [otp, setOtp] = useState<OtpData['otp']>(['', '', '', '']);
-    const [isResendDisabled, setIsResendDisabled] = useState<boolean>(false);
     const [seconds, setSeconds] = useState<number>(120);
     const [error, setError] = useState<OtpError>({});
     const inputRefs = useRef<HTMLInputElement[]>([]); // Refs untuk semua input OTP
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (seconds === 0) {
-            setIsResendDisabled(false);
-        } else {
-            const intervalId = setInterval(() => {
-                if (seconds > 0) setSeconds(seconds - 1);
-            }, 1000);
-            return () => clearInterval(intervalId);
-        }
+        const intervalId = setInterval(() => {
+            if (seconds > 0) setSeconds(seconds - 1);
+        }, 1000);
+        return () => clearInterval(intervalId);
     }, [seconds]);
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -60,15 +54,13 @@ const OtpForm: React.FC = () => {
         }
     };
 
-    const handleResendOtp = () => {
-        setSeconds(120);
-        setIsResendDisabled(true);
-    };
+    // Memeriksa apakah semua input OTP sudah diisi
+    const isOtpFilled = otp.every(digit => digit !== '');
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen w-full md:w-1/4 bg-white sm:p-6 p-6">
             <img src={HinoLogo} alt="Hino Logo" className="w-[115px] h-auto sm:w-[150px] sm:h-auto mb-8 mt-5" />
-            <h2 className="text-[12px] sm:text-[15px] sm:mb-24 mb-14">Masukkan Kode Verifikasi</h2>
+            <h2 className="text-[12px] sm:text-[15px] sm:mb-24 mb-14">Masukkan Kode Dokumen</h2>
 
             {/* Input OTP */}
             <div className="grid grid-cols-4 sm:gap-10 gap-5 mb-24 sm:mb-30">
@@ -90,22 +82,15 @@ const OtpForm: React.FC = () => {
             )}
 
             {/* Tombol Verifikasi */}
-            <Button variant="destructive" size="default" onClick={handleVerifyClick} className="w-full mb-4">
+            <Button 
+                variant="destructive" 
+                size="default" 
+                onClick={handleVerifyClick} 
+                className="w-full mb-4"
+                disabled={!isOtpFilled} // Menonaktifkan tombol jika form belum terisi
+            >
                 Verifikasi
             </Button>
-
-            {/* Teks Resend OTP */}
-            <div className="mt-4 text-center">
-                <p className="font-helvetica text-[12px] mb-1">Belum menerima kode OTP?</p>
-                <CountdownTimer seconds={seconds} />
-            </div>
-
-            {/* Tombol Resend OTP */}
-            {seconds === 0 && (
-                <Button onClick={handleResendOtp} className="mt-4" size="sm" disabled={isResendDisabled}>
-                    Resend OTP
-                </Button>
-            )}
 
             {/* Logo Hino dan Copyright */}
             <div className="absolute bottom-2 left-0 w-full text-center text-xs text-gray-500">
