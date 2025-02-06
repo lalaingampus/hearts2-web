@@ -20,13 +20,18 @@ export interface RequestBody {
   UserInfo: typeof USER_INFO_PACKING;
 }
 
-export const normalizeRequestBody = (): RequestBody => {
+// Updated normalizeRequestBody to accept dynamic parameters
+export const normalizeRequestBody = (
+  PackListDocNo: string,
+  CompanyCode: string,
+  DealerRepCode: string
+): RequestBody => {
   return {
-    CompanyCode: '102041000',
+    CompanyCode: CompanyCode || '102041000', // Default to '102041000' if not provided
     StartDate: '2025-01-01',
     EndDate: '2025-13-01',
     LastUpdateDate: '',
-    PackListDocNo: 'SPPC/H/01/25/00005',
+    PackListDocNo: PackListDocNo || 'SPPC/H/01/25/00005', // Default to a given document number if not provided
     PackListSysNo: '',
     SoDocNo: '',
     SoSysNo: '',
@@ -34,9 +39,9 @@ export const normalizeRequestBody = (): RequestBody => {
     WhsCode: '',
     ProfitCenter: '',
     Status: '',
-    DealerRepCode: '01030',
+    DealerRepCode: DealerRepCode || '01030', // Default to '01030' if not provided
     DeliveryStatus: '',
     ExternalApp: '',
-    UserInfo: USER_INFO_PACKING,  // Menggunakan data UserInfo dari file userInfo.ts
+    UserInfo: USER_INFO_PACKING,  // Using data from userInfo.ts
   };
 };

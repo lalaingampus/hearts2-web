@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://hdcs.hinodms.co.id/restapitest/frontend/web/index.php', // Ganti dengan URL target API yang sesuai
+        target: 'https://gradingbe.unotek.co.id', // Ganti dengan URL target API yang sesuai
         changeOrigin: true, // Mengubah origin header jika diperlukan
         rewrite: (path) => path.replace(/^\/api/, ''), // Opsi untuk mengubah path URL jika diperlukan
       },

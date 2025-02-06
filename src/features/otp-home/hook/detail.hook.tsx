@@ -21,12 +21,23 @@ const usePackingDataDetail = () => {
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState<string | null>(null); // State for error
 
+  // Replace with dynamic values (could come from state or props)
+  const packListDocNo = 'SPPC/H/01/25/00005'; // Example, should be passed dynamically
+  const companyCode = '102041000'; // Example, should be passed dynamically
+  const dealerRepCode = '01030'; // Example, should be passed dynamically
+
   // Function to fetch data from the API
   const fetchData = async () => {
+    if (!packListDocNo || !companyCode || !dealerRepCode) {
+      setError('Missing required parameters');
+      setLoading(false);
+      return;
+    }
+
     const url = API_URLS.packingList;
 
-    // Request body based on RequestBody interface
-    const body: RequestBody = normalizeRequestBody();
+    // Request body with dynamic values
+    const body: RequestBody = normalizeRequestBody(packListDocNo, companyCode, dealerRepCode);
 
     try {
       setLoading(true); // Enable loading state
@@ -46,7 +57,7 @@ const usePackingDataDetail = () => {
   // Call fetchData when the component mounts
   useEffect(() => {
     fetchData();
-  }, []);
+  }, []); // Empty dependency array means this runs only once when the component mounts
 
   return { data, loading, error };
 };

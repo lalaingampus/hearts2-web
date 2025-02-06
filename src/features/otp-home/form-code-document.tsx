@@ -1,17 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui-base/button';
 import HinoLogo from '@/assets/image.png';
 import FooterLogo from '@/assets/footer.png';
 import { otpSchema } from './data/schema';
 import { OtpError, OtpData } from './types/otp-form.type';
-import { useNavigate } from 'react-router-dom';
 
 const OtpForm: React.FC = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const [otp, setOtp] = useState<OtpData['otp']>(['', '', '', '']);
     const [seconds, setSeconds] = useState<number>(120);
     const [error, setError] = useState<OtpError>({});
-    const inputRefs = useRef<HTMLInputElement[]>([]); // Refs untuk semua input OTP
-    const navigate = useNavigate();
+
+    const inputRefs = useRef<HTMLInputElement[]>([]);
+
+    // Ambil data dari URL path setelah '/form-code-document/'
+    useEffect(() => {
+        const pathParts = location.pathname.replace('/form-code-document/', '').split('/');
+        if (pathParts.length >= 3) {
+            console.log("✅ Data dari URL:");
+            console.log("Packlist Doc No:", decodeURIComponent(pathParts[0]));
+            console.log("Company Code:", pathParts[1]);
+            console.log("Dealer Code:", pathParts[2]);
+        }
+    }, [location]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -27,22 +41,87 @@ const OtpForm: React.FC = () => {
         setOtp(newOtp);
 
         if (value && index < otp.length - 1) {
-            // Fokus ke input berikutnya jika ada
             inputRefs.current[index + 1]?.focus();
         }
 
         if (!value && index > 0) {
-            // Jika dihapus, pindah ke input sebelumnya
             inputRefs.current[index - 1]?.focus();
         }
     };
 
-    const handleVerifyClick = () => {
+    const handleVerifyClick = async () => {
         const result = otpSchema.safeParse({ otp });
         if (result.success) {
-            console.log('OTP valid:', otp.join(''));
             setError({});
-            navigate('/detail');
+
+            const pathParts = location.pathname.replace('/form-code-document/', '').split('/');
+            const packListDocNo = decodeURIComponent(pathParts[0]);
+            const companyCode = pathParts[1];
+            const dealerRepCode = pathParts[2];
+
+            // Format query params
+            const queryParams = new URLSearchParams({
+                otp: otp.join(''),
+                pack_list_doc_no: packListDocNo,
+                company_code: companyCode,
+                dealer_rep_code: dealerRepCode,
+            }).toString();
+
+            const apiUrl = `/api/web-detail?${queryParams}`;
+            console.log("📡 Fetching URL:", apiUrl);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                console.log("📬 Response Status:", response.status, response.statusText);
+                console.log(JSON.stringify(response,null,2))
+
+                // Periksa apakah responsnya bertipe JSON
+                const contentType = response.headers.get('Content-Type');
+                if (contentType && contentType.includes('application/json')) {
+                    const responseText = await response.text();
+                    console.log("📜 Raw Response Text:", responseText);
+
+                    if (!response.ok) {
+                        console.error('❌ Error Response:', response.statusText);
+                        return;
+                    }
+                    
+                    try {
+                        const data = JSON.parse(responseText);
+                        console.log("✅ Parsed JSON Response:", data);
+
+                        // Navigasi ke halaman detail jika sukses
+                        const navigationData = {
+                            otp: otp.join(''),
+                            packListDocNo,
+                            companyCode,
+                            dealerRepCode,
+                            apiResponse: data, // Simpan data respons untuk navigasi
+                        };
+
+                        console.log("📤 Navigating with data:", navigationData);
+                        navigate('/detail', { 
+                            state: { 
+                                apiResponse: data.detail[0] // Mengirimkan objek pertama dalam array "detail"
+                            } 
+                        });
+
+                    } catch (jsonError) {
+                        console.error("❌ JSON Parsing Error:", jsonError);
+                    }
+                } else {
+                    console.error('❌ Response is not JSON:', contentType);
+                }
+
+            } catch (error) {
+                console.error('❌ Request failed:', error);
+            }
         } else {
             const errorMap: OtpError = {};
             result.error.errors.forEach((err) => {
@@ -54,7 +133,6 @@ const OtpForm: React.FC = () => {
         }
     };
 
-    // Memeriksa apakah semua input OTP sudah diisi
     const isOtpFilled = otp.every(digit => digit !== '');
 
     return (
@@ -73,7 +151,7 @@ const OtpForm: React.FC = () => {
                         value={digit}
                         inputMode="numeric" // Keyboard angka pada perangkat seluler
                         onChange={(e) => handleOtpChange(e, index)}
-                        className="w-12 h-12 sm:w-16 sm:h-16 text-center text-xl  rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 bg-[#F9F9F9]"
+                        className="w-12 h-12 sm:w-16 sm:h-16 text-center text-xl rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 bg-[#F9F9F9]"
                     />
                 ))}
             </div>
