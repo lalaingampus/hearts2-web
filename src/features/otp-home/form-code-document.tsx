@@ -60,7 +60,6 @@ const OtpForm: React.FC = () => {
             const companyCode = pathParts[1];
             const dealerRepCode = pathParts[2];
     
-            // Format query params
             const queryParams = new URLSearchParams({
                 otp: otp.join(''),
                 pack_list_doc_no: packListDocNo,
@@ -69,8 +68,7 @@ const OtpForm: React.FC = () => {
             }).toString();
     
             const apiUrl = `/api/web-detail?${queryParams}`;
-            console.log("📡 Fetching URL:", apiUrl);
-    
+            
             try {
                 const response = await fetch(apiUrl, {
                     method: 'GET',
@@ -79,72 +77,32 @@ const OtpForm: React.FC = () => {
                     },
                 });
     
-                console.log("📬 Response Status:", response.status, response.statusText);
-                const contentType = response.headers.get('Content-Type');
-                if (contentType && contentType.includes('application/json')) {
-                    const responseText = await response.text();
-                    console.log("📜 Raw Response Text:", responseText);
-    
-                    if (!response.ok) {
-                        console.error('❌ Error Response:', response.statusText);
-                        return;
-                    }
-    
-                    try {
-                        const data = JSON.parse(responseText);
-                        console.log("✅ Parsed JSON Response:", data);
-    
-                        // Extract SoDocNo from the response (Assuming it's in data.detail[0])
-                        const soDocNo = data.detail[0]?.SoDocNo || '';
-                        const last4Digits = soDocNo.slice(-4); // Get last 4 digits
-                        setSoDocNo(last4Digits); // Store last 4 digits in state
-                        console.log('Last 4 digits of SoDocNo:', last4Digits);
-    
-                        // Validate if OTP matches last 4 digits of SoDocNo
-                        const enteredOtp = otp.join('');
-                        console.log('Entered OTP:', enteredOtp); // Log entered OTP
-                        if (enteredOtp !== last4Digits) {
-                            alert('❌ OTP tidak cocok dengan kode yang diharapkan.');
-                            console.log('❌ OTP does not match SoDocNo.');
-                            return;
-                        }
-    
-                        // Proceed if OTP matches
-                        const navigationData = {
-                            otp: otp.join(''),
-                            packListDocNo,
-                            companyCode,
-                            dealerRepCode,
-                            apiResponse: data, // Simpan data respons untuk navigasi
-                        };
-    
-                        console.log("📤 Navigating with data:", navigationData);
-                        navigate('/detail', { 
-                            state: { 
-                                apiResponse: data.detail[0] // Mengirimkan objek pertama dalam array "detail"
-                            } 
-                        });
-    
-                    } catch (jsonError) {
-                        console.error("❌ JSON Parsing Error:", jsonError);
-                    }
-                } else {
-                    console.error('❌ Response is not JSON:', contentType);
+                const responseText = await response.text();
+                if (!response.ok) {
+                    console.error('❌ Error Response:', response.statusText);
+                    setError({ otp: 'Kode OTP tidak sama' });
+                    return;
                 }
+    
+                const data = JSON.parse(responseText);
+                const soDocNo = data.detail[0]?.SoDocNo || '';
+                const last4Digits = soDocNo.slice(-4); // Get last 4 digits
+                setSoDocNo(last4Digits);
+    
+                if (otp.join('') !== last4Digits) {
+                    setError({ otp: 'Kode OTP tidak sama' });
+                    return;
+                }
+    
+                navigate('/detail', { state: { apiResponse: data.detail[0] } });
     
             } catch (error) {
                 console.error('❌ Request failed:', error);
             }
-        } else {
-            const errorMap: OtpError = {};
-            result.error.errors.forEach((err) => {
-                if (err.path[0] === 'otp') {
-                    errorMap.otp = err.message;
-                }
-            });
-            setError(errorMap);
         }
     };
+    
+    
     
 
     const isOtpFilled = otp.every(digit => digit !== '');
@@ -173,9 +131,12 @@ const OtpForm: React.FC = () => {
             </div>
 
             {/* Error message for OTP */}
-            {error.otp && (
-                <div className="text-red-500 sm:text-xs text-sm mb-4">{error.otp || 'Error'}</div>
+            {error && error.otp && (
+                <div className="error-message flex items-center justify-center text-center text-red-500 mb-5">
+                    {error.otp}
+                </div>
             )}
+
     
             {/* Verify Button */}
             <Button 
