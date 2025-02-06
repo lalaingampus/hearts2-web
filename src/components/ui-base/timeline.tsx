@@ -97,7 +97,7 @@ const Timeline: React.FC<TimelineProps> = ({ items }) => {
     )}
 
     <p className="text-sm text-gray-600 mt-3">
-      Diterima pada {selectedItem?.date} {selectedItem?.time} oleh {selectedItem?.person}
+      Diterima pada {selectedItem?.date} oleh {selectedItem?.person}
     </p>
     <Button variant="destructive" onClick={() => setSelectedItem(null)}>Tutup</Button>
   </DialogContent>
