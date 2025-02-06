@@ -95,7 +95,7 @@ const OtpForm: React.FC = () => {
 
                 if (!response.ok) {
                     console.error('❌ Error Response:', response.statusText);
-                    setError({ otp: 'Kode OTP tidak sama' });
+                    setError({ otp: 'Kode OTP tidak valid' });
                     setIsLoading(false); // Hide progress bar on error
                     return;
                 }
@@ -107,7 +107,7 @@ const OtpForm: React.FC = () => {
                 setSoDocNo(last4Digits);
 
                 if (otp.join('') !== last4Digits) {
-                    setError({ otp: 'Kode OTP tidak sama' });
+                    setError({ otp: 'Kode OTP tidak valid' });
                     setIsLoading(false); // Hide progress bar on error
                     return;
                 }
