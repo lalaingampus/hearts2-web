@@ -3,7 +3,7 @@ import React from 'react';
 import { FaWhatsapp } from 'react-icons/fa'; // WhatsApp icon from react-icons
 
 const StickyWhatsAppButton: React.FC = () => {
-  const whatsappLink = 'https://wa.me/085121053911';
+  const whatsappLink = 'https://wa.me/6285121053911';
   const handleClick = () => {
     console.log("Button clicked!");
     // Jika ingin membuka link WhatsApp:

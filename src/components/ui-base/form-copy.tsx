@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCopy } from 'react-icons/fa';
+import { LuCopy } from 'react-icons/lu';
 
 interface PackListCardProps {
   packListDocNo: string;
@@ -24,7 +24,7 @@ const PackListCard: React.FC<PackListCardProps> = ({ packListDocNo, onCopy }) =>
       onClick={handleClick}
     >
       <span className="text-sm text-gray-600">No. {packListDocNo}</span>
-      <FaCopy
+      <LuCopy
         size={16}
         color={isClicked ? '#FFFFFF' : '#D9D9D9'} // Warna putih saat diklik
         className="cursor-pointer"

@@ -6,7 +6,8 @@ import historyItems from '@/features/otp-home/data/default';
 import StickyWhatsAppButton from '@/components/ui-base/whatsapp-button';
 import PackListCard from '@/components/ui-base/form-copy';
 import { formatDateID } from '@/lib/utility/formatDate';
-import { FaClipboard } from 'react-icons/fa';
+
+import { LuCopy } from 'react-icons/lu';
 
 // Fungsi utilitas untuk format angka
 const formatNumber = (num: number) => num.toLocaleString('id-ID');
@@ -95,7 +96,7 @@ const Detail: React.FC = () => {
               <div className="flex items-center">
                 <span className="text-sm text-gray-600 font-bold pt-2">{data.ResiNo}</span>
                 <button onClick={copyToClipboard} className="ml-2">
-                  <FaClipboard className="text-gray-600 cursor-pointer hover:text-gray-800" />
+                  <LuCopy  className="text-gray-400 cursor-pointer hover:text-gray-800" />
                 </button>
               </div>
             </div>
