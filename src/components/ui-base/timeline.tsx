@@ -45,7 +45,7 @@ const Timeline: React.FC<TimelineProps> = ({ items }) => {
                   <div className="mt-1">
                     {item.date && (
                       <span className="ml-0 text-xs text-gray-500">
-                        {item.date} {item.time}{' '}
+                        {item.date} {' '}
                       </span>
                     )}
                     <span className="text-xs text-gray-600 font-bold">{item.person}</span>
@@ -71,53 +71,62 @@ const Timeline: React.FC<TimelineProps> = ({ items }) => {
 
       {/* Modal Detail */}
       <Dialog open={!!selectedItem && !isFullImage} onOpenChange={() => setSelectedItem(null)}>
-        <DialogContent className="rounded-xl lg:rounded-xl w-[70%] lg:w-[50%]">
-          <DialogHeader>
-            <DialogTitle>{selectedItem?.title}</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-gray-600">{selectedItem?.details}</p>
-          {selectedItem?.imageUrl && (
-            <div className="relative w-full">
-              <img
-                src={selectedItem.imageUrl}
-                alt="Detail"
-                className="w-full h-48 object-cover mt-3 rounded-md"
-              />
-              {/* Resize Icon */}
-              <div 
-                className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-md cursor-pointer z-10"
-                onClick={() => setIsFullImage(true)}
-              >
-                <Move className="w-5 h-5 text-gray-500" />
-              </div>
-            </div>
-          )}
-          <p className="text-sm text-gray-600 mt-3">Diterima pada {selectedItem?.date} {selectedItem?.time} oleh {selectedItem?.person}</p>
-          <Button variant="destructive" onClick={() => setSelectedItem(null)}>Tutup</Button>
-        </DialogContent>
-      </Dialog>
+  <DialogContent className="rounded-xl lg:rounded-xl w-[70%] lg:w-[50%]">
+    <DialogHeader>
+      <DialogTitle>{selectedItem?.title}</DialogTitle>
+    </DialogHeader>
+
+    
+    {selectedItem?.imageUrl && (
+      <div className="relative w-full">
+        {/* Check if the image is a Base64 string and format it correctly */}
+        <img
+          src={`data:image/jpeg;base64,${selectedItem.imageUrl}`}  // Ensure MIME type is correct (jpeg, png, etc.)
+          alt="Detail"
+          className="w-full h-48 object-cover mt-3 rounded-md"
+        />
+        
+        {/* Resize Icon */}
+        <div 
+          className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-md cursor-pointer z-10"
+          onClick={() => setIsFullImage(true)}
+        >
+          <Move className="w-5 h-5 text-gray-500" />
+        </div>
+      </div>
+    )}
+
+    <p className="text-sm text-gray-600 mt-3">
+      Diterima pada {selectedItem?.date} {selectedItem?.time} oleh {selectedItem?.person}
+    </p>
+    <Button variant="destructive" onClick={() => setSelectedItem(null)}>Tutup</Button>
+  </DialogContent>
+</Dialog>
+
 
       {/* Modal Full Image dengan Background Opacity */}
       <Dialog open={isFullImage} onOpenChange={() => setIsFullImage(false)}>
-        <DialogContent className="rounded-xl lg:rounded-xl w-full max-w-4xl h-full flex items-center justify-center border-transparent bg-gray">
-          {selectedItem?.imageUrl && (
-            <div className="relative w-full flex justify-center">
-              <img
-                src={selectedItem.imageUrl}
-                alt="Full Image"
-                className="max-w-full max-h-screen object-contain"
-              />
-              {/* Unresize Icon di pojok kanan bawah */}
-              <div 
-                className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md cursor-pointer z-20"
-                onClick={() => setIsFullImage(false)}
-              >
-                <Minimize2   className="w-6 h-6 text-gray-500" />
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+  <DialogContent className="rounded-xl lg:rounded-xl w-full max-w-4xl h-full flex items-center justify-center border-transparent bg-gray">
+    {selectedItem?.imageUrl && (
+      <div className="relative w-full flex justify-center">
+       
+        <img
+          src={`data:image/jpeg;base64,${selectedItem.imageUrl}`}  // Ensure MIME type is correct
+          alt="Full Image"
+          className="max-w-full max-h-screen object-contain"
+        />
+        {/* Unresize Icon di pojok kanan bawah */}
+        <div 
+          className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-md cursor-pointer z-20"
+          onClick={() => setIsFullImage(false)}
+        >
+          <Minimize2 className="w-6 h-6 text-gray-500" />
+        </div>
+      </div>
+    )}
+  </DialogContent>
+</Dialog>
+
     </div>
   );
 };

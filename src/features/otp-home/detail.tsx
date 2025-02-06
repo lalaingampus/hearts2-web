@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import FooterLogo from '@/assets/footer.png';
 import Timeline from '@/components/ui-base/timeline';
-import historyItems from '@/features/otp-home/data/default';
+
 import StickyWhatsAppButton from '@/components/ui-base/whatsapp-button';
 import PackListCard from '@/components/ui-base/form-copy';
 import { formatDateID } from '@/lib/utility/formatDate';
@@ -33,6 +33,22 @@ const Detail: React.FC = () => {
       setLoading(false);
     }
   }, [apiResponse]);
+
+  const updatedHistoryItems = [
+    
+    {
+      title: 
+        data?.Deliverystatus === 'PRP' ? 'Menunggu Konfirmasi' :
+        data?.Deliverystatus === 'DLV' ? 'Selesai' :
+        data?.Deliverystatus || 'Unknown Status', // Default to 'Unknown Status' if no match
+      person: data?.CreationUserName || 'Unknown User',
+      time: '12:00', // Add the appropriate time for the change if needed
+      date: formatDateID(data?.ChangeDatetime), // You can adjust this if you have a specific date for the change
+      details: `User name has been changed to ${data?.ChangeUserName}`,
+      imageUrl: data?.DeliveryAttachment
+    },
+  ];
+  
 
   const copyToClipboard = () => {
     if (data?.ResiNo) {
@@ -177,7 +193,7 @@ const Detail: React.FC = () => {
       )}
 
       <div className="flex flex-col w-full px-0 mt-3">
-        <Timeline items={historyItems} />
+        <Timeline items={updatedHistoryItems} />
       </div>
 
       <StickyWhatsAppButton />
