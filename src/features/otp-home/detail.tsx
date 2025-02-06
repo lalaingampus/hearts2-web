@@ -64,16 +64,20 @@ const Detail: React.FC = () => {
 
   return (
     <div className="flex flex-col items-start justify-start min-h-screen w-full md:w-1/4 bg-white sm:p-6 p-6">
-      <div className="text-bold text-xs text-red-500 mb-8">
-        <p>Details Informasi Penting</p>
-      </div>
-      <img src={FooterLogo} alt="Hino Logo" className="sm:w-24 mb-5 w-14 mx-auto mb-2" />
+      
+      <img src={FooterLogo} alt="Hino Logo" className="sm:w-24 mb-5 w-14 mx-auto mb-2 mt-4" />
+      
+      
+
 
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       
       {data && (
         <div className="w-full">
+          <div className="flex justify-center items-center mb-7">
+            <span className="text-sm text-gray-600 font-bold">{data.CompanyName}</span>
+          </div>
           <PackListCard
             packListDocNo={data.PackListDocNo}
             onCopy={() => handleCopyClick(data.PackListDocNo)}
@@ -123,7 +127,7 @@ const Detail: React.FC = () => {
             <div className="flex justify-between">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-600">Nama Kontak</span>
-                <span className="text-sm text-gray-600 font-bold pt-2">{data.CustomerName}</span>
+                <span className="text-sm text-gray-600 font-bold pt-2">{data.DlvrCp} - {data.CustomerName}</span>
               </div>
               {data.DeliveryMethod === 'DLV' && (
                 <div className="flex flex-col ml-5">
@@ -145,7 +149,7 @@ const Detail: React.FC = () => {
               </div>
               {data.DeliveryMethod === 'DLV' && (
                 <div className="flex flex-col mr-5">
-                  <span className="text-sm text-gray-600">PWT</span>
+                  <span className="text-sm text-gray-600">Estimasi Tiba</span>
                   <span className="text-sm text-gray-600 font-bold pt-2">{data.DeliveryETA}</span>
                 </div>
               )}
@@ -158,12 +162,12 @@ const Detail: React.FC = () => {
             <span className="text-sm text-gray-600 font-bold pt-2">{data.DlvrAddr}</span>
           </div>
 
-          {data.DeliveryMethod === 'DLV' && (
+          {/* {data.DeliveryMethod === 'DLV' && (
             <div className="flex flex-col w-full px-0 mt-3">
               <span className="text-sm text-gray-600">Alamat Pengirim</span>
               <span className="text-sm text-gray-600 font-bold pt-2">{data.DeliverySenderAddress}</span>
             </div>
-          )}
+          )} */}
 
           {/* Berat */}
           <div className="flex flex-col w-full px-0 mt-3">
